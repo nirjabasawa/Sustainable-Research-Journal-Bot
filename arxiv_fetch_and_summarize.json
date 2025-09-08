@@ -1,0 +1,97 @@
+{
+  "name": "arxiv_fetch_and_summarize_fixed_data",
+  "nodes": [
+    {
+      "parameters": {
+        "cronExpression": "0 9 * * 0"
+      },
+      "name": "Weekly Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://export.arxiv.org/api/query?search_query=all:climate+AND+ai&start=0&max_results=5",
+        "responseFormat": "string"
+      },
+      "name": "Fetch arXiv Papers",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "return [{ json: { data: $json.data } }];"
+      },
+      "name": "Ensure Data Field",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Parse XML",
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [800, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const entries = $json.feed.entry || [];\nreturn entries.map(entry => ({\n  json: {\n    title: entry.title,\n    summary: entry.summary,\n    link: entry.id\n  }\n}));"
+      },
+      "name": "Extract Fields",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1000, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const summaries = items.map(item => \n  `📌 ${item.json.title}\\n🔗 ${item.json.link}\\n📝 ${item.json.summary.trim()}\\n\\n`\n).join('\\n');\nreturn [{ json: { digest: summaries } }];"
+      },
+      "name": "Format Digest",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "nirjabasawa431@gmail.com",
+        "toEmail": "nirjabasawa431@gmail.com",
+        "subject": "🌿 Weekly Sustainable Research Digest",
+        "text": "={{$json[\"digest\"]}}"
+      },
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [1400, 300],
+      "credentials": {
+        "smtp": {
+          "id": "gmail-smtp-credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Trigger": {
+      "main": [[{ "node": "Fetch arXiv Papers", "type": "main", "index": 0 }]]
+    },
+    "Fetch arXiv Papers": {
+      "main": [[{ "node": "Ensure Data Field", "type": "main", "index": 0 }]]
+    },
+    "Ensure Data Field": {
+      "main": [[{ "node": "Parse XML", "type": "main", "index": 0 }]]
+    },
+    "Parse XML": {
+      "main": [[{ "node": "Extract Fields", "type": "main", "index": 0 }]]
+    },
+    "Extract Fields": {
+      "main": [[{ "node": "Format Digest", "type": "main", "index": 0 }]]
+    },
+    "Format Digest": {
+      "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]]
+    }
+  }
+}

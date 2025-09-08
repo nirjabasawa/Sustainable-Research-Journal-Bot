@@ -58,9 +58,9 @@
     },
     {
       "parameters": {
-        "fromEmail": "nirjabasawa431@gmail.com",
-        "toEmail": "nirjabasawa431@gmail.com",
-        "subject": "🌿 Weekly Sustainable Research Digest",
+        "fromEmail": "your-email@gmail.com",
+        "toEmail": "your-email@gmail.com",
+        "subject": "🌿 Weekly Sustainable Research Digest 🌿",
         "text": "={{$json[\"digest\"]}}"
       },
       "name": "Send Email",

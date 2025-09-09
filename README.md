@@ -22,14 +22,14 @@ This project uses [n8n](https://n8n.io) to automatically fetch the latest resear
 ---
 
 ## Example Output
-📌 Climate And Resource Awareness is Imperative to Achieving Sustainable AI
-🔗 http://arxiv.org/abs/2502.20016v1
-📝 Sustainability encompasses three key facets: economic, environmental, and social...
+📌 Climate And Resource Awareness is Imperative to Achieving Sustainable AI  
+🔗 http://arxiv.org/abs/2502.20016v1  
+📝 Sustainability encompasses three key facets: economic, environmental, and social...  
 
 ---
 
 ## Project Structure
-sustainable-research-bot/
-├── workflows/
-│ └── arxiv_fetch_and_summarize.json
-└── README.md
+sustainable-research-bot/  
+├── workflows/  
+│ └── arxiv_fetch_and_summarize.json  
+└── README.md  
